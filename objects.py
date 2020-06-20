@@ -32,3 +32,8 @@ class Starter:
     def __setitem__(self, key, value):
         self.players[key] = value
 
+    def __repr__(self):
+        str = ""
+        for p in self.players:
+            str+= '{}: {} ({}) -> ${}'.format(p.position, p.name, p.team, p.salary) + " ; "
+        return str

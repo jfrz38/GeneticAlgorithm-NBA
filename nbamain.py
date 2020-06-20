@@ -4,7 +4,6 @@ import random
 from nbasearch import GeneticAlgorithmSearch
 from objects import *
 
-
 class NBASearch(GeneticAlgorithmSearch):
     def __init__(self, filename: str, population_size=20):
         GeneticAlgorithmSearch.__init__(self)
@@ -23,7 +22,7 @@ class NBASearch(GeneticAlgorithmSearch):
             5: self.pivots_list,
         }
 
-    def _generate_initial_population(self) -> [Starter]:
+    def generar_poblacion_inicial(self) -> [Starter]:
         population = []
         for _ in range(self._population_size):
             starter = [random.choice(self.bases_list)]
@@ -34,9 +33,6 @@ class NBASearch(GeneticAlgorithmSearch):
             population.append(Starter(starter))
         return population
 
-    def evaluate_chromosome(self, starter: Starter) -> float:
-        return sum(player.adjusted_production for player in starter)
-
     @staticmethod
     def __find_player_to_replace(starter: Starter, position: str) -> Player:
         players_of_position = {player for player in starter if player.position == position}
@@ -45,24 +41,21 @@ class NBASearch(GeneticAlgorithmSearch):
                 return player
         raise ValueError("Unable to find duplicate players in starter!")
 
-    def do_crossover(self, chromosome1: Starter, chromosome2: Starter) -> Starter:
-        crossover_index = random.randint(0, len(chromosome1))
-        new_starter = Starter(chromosome1[:crossover_index] + chromosome2[crossover_index:])
+    def realizar_crossover(self, padre1: Starter, padre2: Starter) -> Starter:
+        indice_crossover = random.randint(0, len(padre1))
+        new_starter = Starter(padre1[:indice_crossover] + padre2[indice_crossover:])
         return new_starter
 
 
-    def do_mutation(self, starter: Starter) -> Starter:
+    def realizar_mutacion(self, starter: Starter) -> Starter:
         for index, player in enumerate(starter):
-            if random.randint(0, 100) < self.mutation_rate:
+            if random.randint(0, 100) < self.probabilidad_mutacion:
                 # picking new random player of same position not already in starter
-                starter[index] = self.__randomly_choose_player_not_in(starter, player.position)
+                starter[index] = self.jugador_aleatorio(starter, player.position)
         return starter
 
-    def __randomly_choose_player_not_in(self, starter: Starter, position: str):
+    def jugador_aleatorio(self, starter: Starter, position: str):
         return random.choice(list(set(self.position_to_player_list_map[position]).difference({p for p in starter if p.position == position})))
-
-    
-
 
 '''
 Asegurarse que los jugadores sin datos no manchan el resultado.
@@ -95,8 +88,11 @@ def generateDataFromCSV(filename: str) -> [Player]:
 
 if __name__ == '__main__':
     nbasearch = NBASearch('nba-list-2016.csv')
-    nbasearch.run_search()
-    best_starter = nbasearch.get_result()
-    print('Best Starter ${}'.format(sum(player.salary for player in best_starter)))
-    for player in best_starter:
-        print(player)
+    nbasearch.iniciar_busqueda()
+    mejor_quinteto = nbasearch.obtener_resultado()
+    if(len(mejor_quinteto)>0):
+        print('Mejor quinteto: {} puntos por ${}'.format(sum(player.adjusted_production for player in mejor_quinteto)/1000,sum(player.salary for player in mejor_quinteto)))
+        for player in mejor_quinteto:
+            print(player)
+    else:
+        print("No se ha podido encontrar ningún quinteto")
