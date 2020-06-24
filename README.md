@@ -7,4 +7,4 @@ En un segundo aproximadamente (con 10.000 iteraciones) se obtiene el mejor quint
 
 ![Quinteto](./images/image.png?raw=true)
 
-[Referencia]: https://5280incode.wordpress.com/2017/02/18/genetic-algorithms-part-3-fanduel-lineup-example/amp/
+[Referencia]: (https://5280incode.wordpress.com/2017/02/18/genetic-algorithms-part-3-fanduel-lineup-example/amp/)
