@@ -4,7 +4,7 @@ from objects import Starter
 
 class GeneticAlgorithmSearch:
     def __init__(self):
-        self.n_iteraciones = 1000
+        self.n_iteraciones = 10000
         self.poblacion_actual = []
         self.probabilidad_mutacion = 10  # 10%
         self.limite_salarial=70000000
